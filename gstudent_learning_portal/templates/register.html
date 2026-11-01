@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow">STUDENT ACCESS</div>
+  <h1>Create account</h1>
+  <p class="muted">Your account needs administrator approval.</p>
+  <form method="post">
+    <label>Full name</label>
+    <input name="full_name" required placeholder="Your full name">
+    <label>Registration number</label>
+    <input name="reg_no" required placeholder="Your registration number">
+    <label>Password (minimum 8 characters)</label>
+    <input name="password" type="password" minlength="8" required placeholder="Create password">
+    <button class="primary" type="submit">Submit registration</button>
+  </form>
+  <p class="muted center">Already registered? <a href="{{ url_for('login') }}">Login</a></p>
+</section>
+{% endblock %}

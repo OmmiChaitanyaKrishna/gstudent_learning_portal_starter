@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="auth-card">
+  <div class="eyebrow">WELCOME BACK</div>
+  <h1>Student Login</h1>
+  <p class="muted">Sign in with your registration number.</p>
+  <form method="post">
+    <label>Registration number</label>
+    <input name="reg_no" required autocomplete="username" placeholder="e.g. 123456">
+    <label>Password</label>
+    <input name="password" type="password" required autocomplete="current-password" placeholder="Enter password">
+    <button class="primary" type="submit">Login</button>
+  </form>
+  <p class="muted center">New student? <a href="{{ url_for('register') }}">Create an account</a></p>
+  <p class="small muted">Admin accounts use the same login page.</p>
+</section>
+{% endblock %}

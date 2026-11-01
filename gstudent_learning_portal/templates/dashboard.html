@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="welcome">
+  <div><div class="eyebrow">STUDENT DASHBOARD</div><h1>Hello, {{ name }} 👋</h1><p class="muted">Registration number: {{ reg_no }} · Your learning space</p></div>
+  <div class="avatar">{{ name[:1]|upper }}</div>
+</div>
+<div class="stats">
+  <div class="stat"><span>Learning topics</span><strong>Explore</strong></div>
+  <div class="stat"><span>Practice quizzes</span><strong>Available</strong></div>
+  <div class="stat"><span>Account status</span><strong>Approved</strong></div>
+</div>
+<h2>Student services</h2>
+<div class="tile-grid">
+  {% set tiles = [
+    ('Enrol MAC Address','▤','#fff8df','#a9671c'),
+    ('Helpdesk','?','#e9eaff','#4d4f9c'),
+    ('Mental Health Support','♡','#fbe8fb','#934b98'),
+    ('My dashboard','▦','#eeeeee','#444'),
+    ("What's New",'▣','#eeeeee','#444'),
+    ('Profile','♙','#fbe8fb','#934b98'),
+    ('My credits','♙','#fbe8fb','#934b98'),
+    ('Permissions & Leaves','▤','#ddf7f4','#267e78'),
+    ('Attendance','☑','#fff8df','#a9671c'),
+    ('No objection certificate','☑','#fff8df','#a9671c'),
+    ('Time table','▤','#fff8df','#a9671c'),
+    ('Courses (G-Learn)','▣','#e9eaff','#4d4f9c'),
+    ('Bring your buddies','⚑','#eafbe7','#43823e'),
+    ('Refer a friend','▣','#e9eaff','#4d4f9c'),
+    ('Residence','♙','#e9eaff','#4d4f9c'),
+    ('Dining','♨','#fbe8fb','#934b98'),
+    ('Asraya (CT3)','▦','#eeeeee','#444'),
+    ('Course structure','◫','#eafbe7','#43823e'),
+    ('Scholarship','◆','#fbe8fb','#934b98'),
+    ('Academic track','⌁','#ddf7f4','#267e78'),
+    ('Online grade card','▤','#e9eaff','#4d4f9c'),
+    ('Fee','▣','#ffd9dc','#a34048'),
+    ('Apply for Examinations','▤','#fbe8fb','#934b98'),
+    ('Apply for Certificate','▤','#fbe8fb','#934b98'),
+    ('Admission','▣','#fbe8fb','#934b98'),
+    ('Notice board','▣','#eafbe7','#43823e'),
+    ('Disciplinary info','▣','#fff0e8','#a45b50'),
+    ('Mentor details','▤','#fbe8fb','#934b98'),
+    ('Hall ticket','▤','#e9eaff','#4d4f9c'),
+    ('Circulars','♙','#fbe8fb','#934b98'),
+    ('Feedback','⚑','#eafbe7','#43823e'),
+    ('News & Events','▤','#ddf7f4','#267e78'),
+    ('Course registration','▤','#ddf7f4','#267e78'),
+    ('Events','▦','#fff8df','#a9671c'),
+    ('ATS','▣','#eeeeee','#444'),
+    ('Apply for Summer term','▤','#fbe8fb','#934b98'),
+    ('G-security vehicle pass','▤','#fbe8fb','#934b98'),
+    ('IT policies','▣','#e9eaff','#4d4f9c')
+  ] %}
+  {% for label, symbol, bg, fg in tiles %}
+    {% if label == 'Courses (G-Learn)' %}
+      <a class="tile" style="--tile-bg:{{ bg }};--tile-fg:{{ fg }}" href="{{ url_for('quiz') }}"><span class="tile-icon">{{ symbol }}</span><span>{{ label }}</span></a>
+    {% elif label == 'My dashboard' %}
+      <a class="tile" style="--tile-bg:{{ bg }};--tile-fg:{{ fg }}" href="{{ url_for('dashboard') }}"><span class="tile-icon">{{ symbol }}</span><span>{{ label }}</span></a>
+    {% else %}
+      <a class="tile" style="--tile-bg:{{ bg }};--tile-fg:{{ fg }}" href="{{ url_for('quiz') }}"><span class="tile-icon">{{ symbol }}</span><span>{{ label }}</span></a>
+    {% endif %}
+  {% endfor %}
+</div>
+<div class="assistant-box">
+  <div><h2>AI Learning Assistant</h2><p class="muted">Ask a question about your studies or how to use the portal.</p></div>
+  <div id="chat-log" class="chat-log"><div class="bot-msg">Hi! Ask me about quizzes, TCP, PCA or portal registration.</div></div>
+  <form id="chat-form" class="chat-form">
+    <input id="chat-input" placeholder="Ask your learning question..." required>
+    <button class="primary" type="submit">Send</button>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+const form = document.getElementById('chat-form');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const input = document.getElementById('chat-input');
+  const log = document.getElementById('chat-log');
+  const message = input.value.trim();
+  if (!message) return;
+  log.insertAdjacentHTML('beforeend', `<div class="user-msg"></div>`);
+  log.lastElementChild.textContent = message;
+  input.value = '';
+  try {
+    const res = await fetch('/api/chat', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({message})});
+    const data = await res.json();
+    const reply = document.createElement('div');
+    reply.className = 'bot-msg';
+    reply.textContent = data.reply;
+    log.appendChild(reply);
+    log.scrollTop = log.scrollHeight;
+  } catch { alert('Chat service is not available.'); }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="back" href="{{ url_for('quiz') }}">← All topics</a>
+<div class="eyebrow">PRACTICE QUIZ</div><h1>{{ topic }}</h1>
+{% if questions %}
+<form id="quiz-form">
+{% for q in questions %}
+<section class="question-card" data-answer="{{ q.answer }}" data-explanation="{{ q.explanation|e }}">
+  <h3>{{ loop.index }}. {{ q.question }}</h3>
+  {% for opt in q.options %}
+  <label class="option"><input type="radio" name="q{{ q.id }}" value="{{ opt.value }}" required> <span><b>{{ opt.value }}.</b> {{ opt.label }}</span></label>
+  {% endfor %}
+  <div class="feedback" hidden></div>
+</section>
+{% endfor %}
+<button class="primary" type="submit">Submit answers</button>
+</form>
+<div id="score" class="score" hidden></div>
+{% else %}<p>No questions are available for this topic.</p>{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+const form = document.getElementById('quiz-form');
+if (form) form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const cards = [...document.querySelectorAll('.question-card')];
+  let score = 0;
+  cards.forEach(card => {
+    const chosen = card.querySelector('input[type=radio]:checked');
+    const correct = card.dataset.answer;
+    const feedback = card.querySelector('.feedback');
+    const isCorrect = chosen && chosen.value.toUpperCase() === correct;
+    if (isCorrect) score++;
+    feedback.hidden = false;
+    feedback.textContent = `${isCorrect ? 'Correct' : 'Not quite'}. Answer: ${correct}. ${card.dataset.explanation}`;
+    feedback.className = 'feedback ' + (isCorrect ? 'good' : 'bad');
+  });
+  const box = document.getElementById('score');
+  box.hidden = false;
+  box.textContent = `Your score: ${score} / ${cards.length}`;
+  box.scrollIntoView({behavior:'smooth', block:'center'});
+});
+</script>
+{% endblock %}

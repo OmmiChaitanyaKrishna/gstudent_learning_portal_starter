@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<a class="back" href="{{ url_for('dashboard') }}">← Dashboard</a>
+<div class="eyebrow">G-LEARN</div><h1>Practice quizzes</h1><p class="muted">Choose a topic to start practice.</p>
+<div class="topic-grid">
+{% for topic in topics %}
+<a class="topic-card" href="{{ url_for('quiz_topic', topic=topic) }}"><span class="tile-icon">✎</span><h3>{{ topic }}</h3><span class="muted">Start practice →</span></a>
+{% else %}<p>No topics found. Check data/questions.xlsx.</p>{% endfor %}
+</div>
+{% endblock %}

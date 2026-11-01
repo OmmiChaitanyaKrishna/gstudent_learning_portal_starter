@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>G-Student Learning Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">G<span>Student</span></div>
+  <div class="toplinks">
+    {% if session.get('user_id') %}
+      <span>{{ session.get('full_name') }}</span>
+      <a href="{{ url_for('logout') }}">Logout</a>
+    {% endif %}
+  </div>
+</header>
+<main class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer>G-Student Learning Portal · Local development project</footer>
+{% block scripts %}{% endblock %}
+</body>
+</html>
